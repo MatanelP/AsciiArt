@@ -1,0 +1,30 @@
+matanel.pataki
+205951023
+
+=============================
+=     Use of collections    =
+=============================
+
+I chose to use collections in 3 different parts of the exercise:
+
+1)  In BrightnessImgCharMatcher, by holding a hash map and saving the average brightness of images.
+    I was able to calculate and render an image in much more efficient way thanks to the hash map constant
+    time for getting a stored value (average) given a key (image).
+2)
+3) In uniqueMorseRepresentations, taking advantage of a hash map look up time as explained below.
+
+
+=============================
+=        Algorithms         =
+=============================
+
+1)  findDuplicate:
+
+
+
+2)  uniqueMorseRepresentations:
+
+
+=============================
+=       Funny example       =
+=============================
