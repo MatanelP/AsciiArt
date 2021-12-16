@@ -1,17 +1,20 @@
 matanel.pataki
-205951023
+
 
 =============================
-=     Use of collections    =
+=          Notes            =
 =============================
 
-I chose to use collections in 3 different parts of the exercise:
+To get the most exact char to represent a given pixel, I chose to by iterate trough all the chars
+and their brightness levels. Therefore by calculating the average brightness level of the pixel,
+I could have chosen the closest char brightness level out of all the other.
+
+I chose to use collections in 2 different parts of the exercise:
 
 1)  In BrightnessImgCharMatcher, by holding a hash map and saving the average brightness of images.
     I was able to calculate and render an image in much more efficient way thanks to the hash map constant
     time for getting a stored value (average) given a key (image).
-2)
-3) In uniqueMorseRepresentations, taking advantage of a hash map look up time as explained below.
+2)  In uniqueMorseRepresentations, taking advantage of a hash map look up time as explained below.
 
 
 =============================
@@ -20,11 +23,34 @@ I chose to use collections in 3 different parts of the exercise:
 
 1)  findDuplicate:
 
+    We have two pointers, a turtle and a rabbit.
+    We set them both at the start of the number array.
+    In the first loop, at each iteration we increment the position of the turtle by one,
+    and the position  of the rabbit by two.
+    Eventually, given the assumption on the input, they will land on the same index in the array.
+    at that point, we found a cycle in the array.
+    We can trace back to the origin of that circle in the second loop, and returned the
+    duplicated number.
+
+    At the worst case we will iterate twice over the whole array, therefore the rime complexity will be
+    O(2n) = O(n). By only keeping two pointers, we use a space complexity of O(1).
 
 
 2)  uniqueMorseRepresentations:
 
+    We are iterating trough the given words and adding to a hash map
+    the morse version of each letter.
+    If the map already has that version it means it is not unique and we won't add it to the map.
+    After iterating trough all the words, our map holds only uniquely represented version of the given words.
+    We will return the map total size, and get what we need.
+
+    For each word we are iterating though all the letter in that word, therefore,
+    at the worst case we will get a time complexity of O(S),
+    where S in the sum of the length of all the letters in words.
+
 
 =============================
-=       Funny example       =
+=          Example          =
 =============================
+
+see attached png.

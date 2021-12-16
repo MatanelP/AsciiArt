@@ -2,6 +2,9 @@ package ascii_art;
 import image.Image;
 import java.util.logging.Logger;
 
+/**
+ * Main manger for the program
+ */
 public class Driver {
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {

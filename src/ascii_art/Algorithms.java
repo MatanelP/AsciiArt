@@ -5,13 +5,13 @@ import java.util.HashMap;
 public class Algorithms {
     public static int findDuplicate(int[] numList) {
         int turtle = numList[0];
-        int rabbit = numList[numList[0]];
-        while (rabbit != turtle) {
+        int rabbit = numList[0];
+        do {
             turtle = numList[turtle];
             rabbit = numList[numList[rabbit]];
-        }
-        turtle = 0;
-        while (rabbit != turtle) {
+        } while (turtle != rabbit);
+        turtle = numList[0];
+        while (turtle != rabbit) {
             turtle = numList[turtle];
             rabbit = numList[rabbit];
         }

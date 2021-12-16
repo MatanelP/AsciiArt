@@ -15,36 +15,31 @@ import java.util.stream.Stream;
  * given specific user commands from a shell base communication, renders that image.
  */
 public class Shell {
-    private static final String CMD_EXIT = "exit";
-    public static final String SHELL_PROMPT = ">>> ";
+    private static final String SHELL_PROMPT = ">>> ";
     private static final String FONT_NAME = "Courier New";
     private static final String OUTPUT_FILENAME = "out.html";
     private static final String INITIAL_CHARS_RANGE = "0-9";
     /*    commands     */
-    public static final String CHARS_CMD = "chars";
-    public static final String ADD_CMD = "add";
-    public static final String REMOVE_CMD = "remove";
-    public static final String RES_CMD = "res";
-    public static final String CONSOLE_CMD = "console";
-    public static final String RENDER_CMD = "render";
+    private static final String EXIT_CMD = "exit";
+    private static final String CHARS_CMD = "chars";
+    private static final String ADD_CMD = "add";
+    private static final String REMOVE_CMD = "remove";
+    private static final String RES_CMD = "res";
+    private static final String CONSOLE_CMD = "console";
+    private static final String RENDER_CMD = "render";
     /*    commands specification     */
-    public static final String ADD_ALL = "all";
-    public static final String ADD_SPACE = "space";
-    public static final String RES_UP = "up";
-    public static final String RES_DOWN = "down";
+    private static final String ADD_ALL = "all";
+    private static final String ADD_SPACE = "space";
+    private static final String RES_UP = "up";
+    private static final String RES_DOWN = "down";
     /*    massages     */
-    public static final String WIDTH_SET_MSG = "Width set to ";
-    public static final String MAXIMAL_RESOLUTION_ERR_MSG = "You're using the maximal resolution";
-    public static final String MINIMAL_RESOLUTION_ERR_MSG = "You're using the minimal resolution";
-    public static final String RES_INPUT_ERR_MSG = "Bad input for resolution change. USAGE: \"res up/down\"";
-    public static final String ADD_INPUT_ERR_MSG = "Bad input for adding chars. USAGE:" +
-            " \"add all/space/range/single char\"";
-    public static final String SHELL_INPUT_ERR_MSG = "BAD INPUT: USAGE:" +
-            " \"chars/add/remove/res/console/render\"";
-    public static final String REMOVE_INPUT_ERR_MSG = "Bad input for removing chars. USAGE:" +
-            " \"remove all/space/range/single char\"";
-    public static final String REGEX_PATTERN = "%s|(%s|%s) ((.-.)|%s|%s)|%s|%s|(%s (%s|%s))";
-
+    private static final String WIDTH_SET_MSG = "Width set to ";
+    private static final String MAXIMAL_RESOLUTION_ERR_MSG = "You're using the maximal resolution";
+    private static final String MINIMAL_RESOLUTION_ERR_MSG = "You're using the minimal resolution";
+    private static final String REGEX_PATTERN = "%s|(%s|%s) ((.-.)|%s|%s|.)|%s|%s|%s|(%s (%s|%s))";
+    private static final String SHELL_INPUT_ERR_MSG = "BAD INPUT: USAGE: " + String.format(REGEX_PATTERN,
+            CHARS_CMD, ADD_CMD, REMOVE_CMD, ADD_ALL, ADD_SPACE, EXIT_CMD,
+            RENDER_CMD, CONSOLE_CMD, RES_CMD, RES_UP, RES_DOWN);
     private final BrightnessImgCharMatcher charMatcher;
     private final AsciiOutput output;
     private static final int MIN_PIXELS_PER_CHAR = 2;
@@ -75,8 +70,8 @@ public class Shell {
      */
     public void run() {
         String userInput;
-        do {
-            Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
             System.out.print(SHELL_PROMPT);
             userInput = scanner.nextLine();
 
@@ -96,13 +91,16 @@ public class Shell {
                 case CONSOLE_CMD:
                     this.isConsolePrint = true;
                     break;
-                case RENDER_CMD: //todo: what should we do if there are no chars at all?
-                    render();
+                case RENDER_CMD:
+                    if (!charSet.isEmpty())
+                        render();
                     break;
+                case EXIT_CMD:
+                    return;
                 default:
                     System.out.println(SHELL_INPUT_ERR_MSG);
             }
-        } while (!userInput.equals(CMD_EXIT));
+        }
     }
 
     /*
@@ -111,7 +109,7 @@ public class Shell {
     private String getCommand(String userInput) {
         Matcher m = Pattern.compile(
                         String.format(REGEX_PATTERN,
-                                CHARS_CMD, ADD_CMD, REMOVE_CMD, ADD_ALL, ADD_SPACE,
+                                CHARS_CMD, ADD_CMD, REMOVE_CMD, ADD_ALL, ADD_SPACE, EXIT_CMD,
                                 RENDER_CMD, CONSOLE_CMD, RES_CMD, RES_UP, RES_DOWN))
                 .matcher(userInput);
         if (!m.matches())
@@ -161,7 +159,7 @@ public class Shell {
             // add all range to charSet
             Stream.iterate(range[0], c -> c <= range[1], c -> (char) ((int) c + 1)).forEach(charSet::add);
             Stream.iterate(range[1], c -> c <= range[0], c -> (char) ((int) c + 1)).forEach(charSet::add);
-        } else System.out.println(ADD_INPUT_ERR_MSG);
+        }
     }
 
     /*
@@ -173,8 +171,7 @@ public class Shell {
             // remove all range from charSet
             Stream.iterate(range[0], c -> c <= range[1], c -> (char) ((int) c + 1)).forEach(charSet::remove);
             Stream.iterate(range[1], c -> c <= range[0], c -> (char) ((int) c + 1)).forEach(charSet::remove);
-        } else
-            System.out.println(REMOVE_INPUT_ERR_MSG);
+        }
     }
 
     /*
@@ -197,7 +194,6 @@ public class Shell {
                 charsInRow /= 2;
                 break;
             default:
-                System.out.println(RES_INPUT_ERR_MSG);
                 return;
         }
         System.out.println(WIDTH_SET_MSG + charsInRow);
